@@ -27,6 +27,11 @@ public class ServerShutdownListener {
     eventNode.addListener(EventListener.builder(ServerShutdownRequestedEvent.class)
         .handler(event -> {
           //Do the following when shutdown is requested
+          MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> {
+            player.sendMessage("Server is shutting down soon.tm! Please log off.");
+          });
+
+          System.out.println("Server is shutting down soon.tm!");
 
           //Task with 3 minute delay
           MinecraftServer.getSchedulerManager().buildTask(() -> {

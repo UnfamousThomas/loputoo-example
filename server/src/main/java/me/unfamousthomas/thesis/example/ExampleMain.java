@@ -8,6 +8,7 @@ import me.unfamousthomas.thesis.example.commands.ServerStateCommand;
 import me.unfamousthomas.thesis.example.gameserver.api.SidecarAPIClient;
 import me.unfamousthomas.thesis.example.gameserver.api.models.ShutdownState;
 import me.unfamousthomas.thesis.example.gameserver.impl.ServerHandler;
+import me.unfamousthomas.thesis.example.gameserver.impl.listeners.ServerShutdownListener;
 import me.unfamousthomas.thesis.example.metrics.MetricAPIClient;
 import me.unfamousthomas.thesis.example.metrics.MetricHandler;
 import net.minestom.server.MinecraftServer;
@@ -39,6 +40,9 @@ public class ExampleMain {
     }
 
     MinecraftServer.getCommandManager().register(new ServerStateCommand(sidecarAPIClient, serverHandler));
+    ServerShutdownListener shutdownListener = new ServerShutdownListener(serverHandler);
+    shutdownListener.registerEvent();
+
     server.start("0.0.0.0", 25565);
   }
 
