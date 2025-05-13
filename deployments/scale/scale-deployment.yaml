@@ -16,6 +16,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: scale-svc
+          imagePullPolicy: Always
           image: ghcr.io/unfamousthomas/loputoo-example-service:latest
           ports:
             - containerPort: 8080
