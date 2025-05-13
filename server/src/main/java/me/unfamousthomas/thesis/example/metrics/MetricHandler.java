@@ -36,7 +36,7 @@ public class MetricHandler {
         System.out.println("Sending metrics to server");
         metricAPIClient.postMetric(metrics);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        System.out.println("Failed to send metric request: " + e.getMessage() + ". Retrying soon.");
       }
       return TaskSchedule.seconds(5);
     }, TaskSchedule.seconds(10));
