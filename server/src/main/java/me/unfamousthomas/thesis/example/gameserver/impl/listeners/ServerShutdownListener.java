@@ -14,8 +14,6 @@ import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 
 public class ServerShutdownListener {
-
-  private final EventNode<Event> eventNode = EventNode.all("gameserver");
   private final ServerHandler serverHandler;
 
 
@@ -24,7 +22,7 @@ public class ServerShutdownListener {
   }
 
   public void registerEvent() {
-    eventNode.addListener(EventListener.builder(ServerShutdownRequestedEvent.class)
+    MinecraftServer.getGlobalEventHandler().addListener(EventListener.builder(ServerShutdownRequestedEvent.class)
         .handler(event -> {
           //Do the following when shutdown is requested
           MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> {

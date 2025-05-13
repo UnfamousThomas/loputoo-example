@@ -12,7 +12,6 @@ import net.minestom.server.timer.TaskSchedule;
 
 public class ServerHandler {
   private final SidecarAPIClient sidecarAPIClient;
-  private final EventNode<Event> eventNode = EventNode.all("gameserver");
   private ShutdownState shutdownState = new ShutdownState(false);
   public ServerHandler(SidecarAPIClient sidecarAPIClient) {
     this.sidecarAPIClient = sidecarAPIClient;
@@ -31,7 +30,7 @@ public class ServerHandler {
       System.out.println("Server shutdown state: " + initialShutdownState.isShuttingDown());
       if (!initialShutdownState.isShuttingDown() && shutdownState.isShuttingDown()) {
         System.out.println("Server is shutting down soon.tm! Sending event!");
-        eventNode.call(new ServerShutdownRequestedEvent());
+        MinecraftServer.getGlobalEventHandler().call(new ServerShutdownRequestedEvent());
         return TaskSchedule.stop();
       }
       return TaskSchedule.seconds(5);
