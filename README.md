@@ -8,3 +8,5 @@ In `./server/` You can see a simple Minestom Minecraft server implementation,
 that by default blocks deletion for a few minutes.
 
 In `./service/` You have some metric based scaling logic that can be used by a Game Autoscaler.
+
+And finally, in `./deployments/` you can see matching deployments for the created application.

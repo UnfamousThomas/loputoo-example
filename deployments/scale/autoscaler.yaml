@@ -1,0 +1,17 @@
+apiVersion: network.unfamousthomas.me/v1alpha1
+kind: GameAutoscaler
+metadata:
+  name: gameautoscaler-server-sample
+spec:
+  gameName: gametype-server-sample
+  policy:
+    type: webhook
+    webhook:
+      path: "/scale"
+      service:
+        name: scale-deployment-service
+        namespace: default
+        port: 8080
+  sync:
+    type: fixedinterval
+    interval: 3m

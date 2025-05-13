@@ -1,0 +1,40 @@
+apiVersion: network.unfamousthomas.me/v1alpha1
+kind: GameType
+metadata:
+  name: gametype-server-sample
+  labels:
+    server: minecraft
+spec:
+  fleetSpec:
+    scaling:
+      replicas: 3
+      prioritizeAllowed: true
+      agePriority: oldest_first
+    spec:
+      timeout: 5m
+      allowForceDelete: false
+      pod:
+        imagePullSecrets:
+          - name: ghcr-secret
+        containers:
+          - name: minestom-container
+            image: ghcr.io/unfamousthomas/loputoo-example-server:latest
+            env:
+              - name: "SERVER_ADDRESS"
+                value: "http://scale-deployment-service:8080"
+            ports:
+              - containerPort: 25565
+                protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gametype-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: minecraft
+  ports:
+    - port: 25565
+      targetPort: 25565
+      nodePort: 30065
