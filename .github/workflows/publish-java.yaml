@@ -1,0 +1,61 @@
+name: Build image and publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+
+      - name: Build jars
+        run: |
+          ./gradlew shadowJar
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF##*/}
+          else
+            VERSION="$(echo ${GITHUB_REF#refs/heads/})-$(echo $GITHUB_SHA | cut -c1-10)"
+          fi
+
+          echo "Version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+          IMAGE_SERVER_ID=ghcr.io/${{ github.repository_owner }}/loputoo-example-server
+          IMAGE_SERVER_ID=$(echo $IMAGE_SERVER_ID | tr '[A-Z]' '[a-z]')
+          echo "IMAGE_SERVER_ID=$IMAGE_SERVER_ID" >> $GITHUB_ENV
+
+      - name: Build Docker images
+        run: |
+          docker build . --file server/Dockerfile --tag $IMAGE_SERVER_ID:latest --tag $IMAGE_SERVER_ID:${{ env.VERSION }} --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push images
+        run: |
+          docker push $IMAGE_SERVER_ID:latest
+          docker push $IMAGE_SERVER_ID:${{ env.VERSION }}
