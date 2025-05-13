@@ -17,7 +17,7 @@ spec:
       containers:
         - name: scale-svc
           imagePullPolicy: Always
-          image: ghcr.io/unfamousthomas/loputoo-example-service:latest
+          image: ghcr.io/unfamousthomas/thesis-example-service:latest
           ports:
             - containerPort: 8080
 ---

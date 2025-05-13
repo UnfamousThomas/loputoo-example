@@ -1,4 +1,4 @@
-name: Build service and publish
+name: Build go service and publish
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           echo "Version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/loputoo-example-service
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/thesis-example-service
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV 
 

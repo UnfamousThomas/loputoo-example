@@ -19,7 +19,7 @@ spec:
         containers:
           - name: minestom-container
             imagePullPolicy: Always
-            image: ghcr.io/unfamousthomas/loputoo-example-server:latest
+            image: ghcr.io/unfamousthomas/thesis-example-server:latest
             env:
               - name: "SERVER_ADDRESS"
                 value: "http://scale-deployment-service:8080"
