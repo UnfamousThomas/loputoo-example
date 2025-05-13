@@ -32,8 +32,8 @@ public class MetricHandler {
   public void startCollectingMetrics() {
     MinecraftServer.getSchedulerManager().scheduleTask(() -> {
       BasicMetrics metrics = collectMetric();
-
       try {
+        System.out.println("Sending metrics to server");
         metricAPIClient.postMetric(metrics);
       } catch (Exception e) {
         throw new RuntimeException(e);

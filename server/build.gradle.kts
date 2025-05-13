@@ -14,3 +14,9 @@ dependencies {
     implementation("net.minestom:minestom-snapshots:ebaa2bbf64")
 }
 
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "me.unfamousthomas.thesis.example.ExampleMain"
+    }
+}
