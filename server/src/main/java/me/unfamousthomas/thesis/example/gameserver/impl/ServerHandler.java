@@ -13,7 +13,7 @@ import net.minestom.server.timer.TaskSchedule;
 public class ServerHandler {
   private final SidecarAPIClient sidecarAPIClient;
   private final EventNode<Event> eventNode = EventNode.all("gameserver");
-  private ShutdownState shutdownState;
+  private ShutdownState shutdownState = new ShutdownState(false);
   public ServerHandler(SidecarAPIClient sidecarAPIClient) {
     this.sidecarAPIClient = sidecarAPIClient;
   }
