@@ -3,7 +3,7 @@ kind: GameType
 metadata:
   name: gametype-server-sample
   labels:
-    server: minecraft
+    gameserver: minecraft
 spec:
   fleetSpec:
     scaling:
@@ -26,16 +26,3 @@ spec:
             ports:
               - containerPort: 25565
                 protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gametype-nodeport
-spec:
-  type: NodePort
-  selector:
-    app: minecraft
-  ports:
-    - port: 25565
-      targetPort: 25565
-      nodePort: 30065
