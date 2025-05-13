@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.function.Supplier;
+import me.unfamousthomas.thesis.example.commands.DeleteOverrideCommand;
 import me.unfamousthomas.thesis.example.commands.ServerStateCommand;
 import me.unfamousthomas.thesis.example.gameserver.api.SidecarAPIClient;
 import me.unfamousthomas.thesis.example.gameserver.api.models.ShutdownState;
@@ -18,6 +19,7 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
 
 public class ExampleMain {
@@ -39,7 +41,7 @@ public class ExampleMain {
       metricHandler.startCollectingMetrics();
     }
 
-    MinecraftServer.getCommandManager().register(new ServerStateCommand(sidecarAPIClient, serverHandler));
+    MinecraftServer.getCommandManager().register(new ServerStateCommand(sidecarAPIClient, serverHandler), new DeleteOverrideCommand(sidecarAPIClient));
     ServerShutdownListener shutdownListener = new ServerShutdownListener(serverHandler);
     shutdownListener.registerEvent();
 
@@ -55,6 +57,7 @@ public class ExampleMain {
     InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
 
     instanceContainer.setGenerator(unit -> unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK));
+    instanceContainer.setChunkSupplier(LightingChunk::new);
 
     GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
     globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {

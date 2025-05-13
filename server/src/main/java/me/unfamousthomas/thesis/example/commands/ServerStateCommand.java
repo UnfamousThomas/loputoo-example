@@ -13,12 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ServerStateCommand extends Command {
 
-  SidecarAPIClient sidecarAPIClient;
-  ServerHandler serverHandler;
   public ServerStateCommand(SidecarAPIClient sidecarAPIClient, ServerHandler serverHandler) {
     super("serverstate");
-    this.sidecarAPIClient = sidecarAPIClient;
-    this.serverHandler = serverHandler;
 
     addSyntax(new CommandExecutor() {
       @Override
