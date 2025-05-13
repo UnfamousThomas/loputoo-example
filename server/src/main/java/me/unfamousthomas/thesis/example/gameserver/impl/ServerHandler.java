@@ -20,14 +20,17 @@ public class ServerHandler {
 
   public void startCheckingShutdownState() {
     MinecraftServer.getSchedulerManager().submitTask(() -> {
+      ShutdownState initialShutdownState = shutdownState;
       try {
         shutdownState = sidecarAPIClient.getShutdownState();
       } catch (InterruptedException e) {
-        throw new RuntimeException("Request was interrupted", e);
+        System.out.println("Server shutdown interrupted");
       } catch (IOException e) {
-        throw new RuntimeException("Request failed due to I/O error", e);
+        System.out.println("Server shutdown io fail");
       }
-      if (shutdownState.isShuttingDown()) {
+      System.out.println("Server shutdown state: " + initialShutdownState.isShuttingDown());
+      if (!initialShutdownState.isShuttingDown() && shutdownState.isShuttingDown()) {
+        System.out.println("Server is shutting down soon.tm! Sending event!");
         eventNode.call(new ServerShutdownRequestedEvent());
         return TaskSchedule.stop();
       }
