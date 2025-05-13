@@ -1,4 +1,4 @@
-name: Build image and publish
+name: Build java and publish
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Build jars
         run: |
-          ./gradlew shadowJar
+          ./server/gradlew shadowJar
 
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION=${GITHUB_REF##*/}
