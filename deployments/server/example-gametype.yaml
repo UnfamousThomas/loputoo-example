@@ -14,11 +14,11 @@ spec:
       timeout: 5m
       allowForceDelete: false
       pod:
-        imagePullPolicy: Always
         imagePullSecrets:
           - name: ghcr-secret
         containers:
           - name: minestom-container
+            imagePullPolicy: Always
             image: ghcr.io/unfamousthomas/loputoo-example-server:latest
             env:
               - name: "SERVER_ADDRESS"
