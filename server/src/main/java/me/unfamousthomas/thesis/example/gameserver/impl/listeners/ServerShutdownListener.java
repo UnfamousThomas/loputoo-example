@@ -31,6 +31,8 @@ public class ServerShutdownListener {
 
           System.out.println("Server is shutting down soon.tm!");
 
+          // In real life there would be a call to the service to remove the label, to stop any new connections from being formed
+
           //Task with 3 minute delay
           MinecraftServer.getSchedulerManager().buildTask(() -> {
             //In real life there would be some logic to handle shutting down stateful stuff here, obviously. But yes.
