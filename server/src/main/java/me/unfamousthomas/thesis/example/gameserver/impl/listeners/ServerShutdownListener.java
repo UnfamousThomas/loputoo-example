@@ -33,47 +33,33 @@ public class ServerShutdownListener {
 
           // In real life there would be a call to the service to remove the label, to stop any new connections from being formed
 
-          //Task with 3 minute delay
-          MinecraftServer.getSchedulerManager().buildTask(() -> {
-            //In real life there would be some logic to handle shutting down stateful stuff here, obviously. But yes.
-            try {
-              //If deletion already allowed for whatever reason, we can just skip it
-              if (serverHandler.getDeletionState().isDeleteAllowed()) {
-                return;
-              }
-
-              //Check every 5 seconds if no players connected, then allow shutdown
-              MinecraftServer.getSchedulerManager().scheduleTask(() -> {
-                if (MinecraftServer.getConnectionManager().getOnlinePlayers().isEmpty()) {
-                  try {
-                    serverHandler.setDeletionState(new DeletionState(true));
-                    return TaskSchedule.stop();
-                  } catch (Exception e) {
-                    //Lazy work, would need better error handling in real life
-                    throw new RuntimeException(e);
-                  }
-                }
-                return TaskSchedule.seconds(5);
-              }, TaskSchedule.seconds(2));
-            } catch (Exception e) {
-              // Lazy as above
-              throw new RuntimeException(e);
+          //After 1 minute just kick the players, in real life more complex logic
+          MinecraftServer.getSchedulerManager().scheduleTask(() -> {
+            if (MinecraftServer.getConnectionManager().getOnlinePlayers().isEmpty()) {
+              return TaskSchedule.stop();
             }
 
-            //After 1 minute just kick the players, in real life more complex logic
-            MinecraftServer.getSchedulerManager().scheduleTask(() -> {
-              if (MinecraftServer.getConnectionManager().getOnlinePlayers().isEmpty()) {
+            for (@NotNull Player player : MinecraftServer.getConnectionManager()
+                .getOnlinePlayers()) {
+              player.kick("Server is shutting down.");
+            }
+            return TaskSchedule.stop();
+          }, TaskSchedule.minutes(1));
+
+          //Check every 5 seconds if no players connected, then allow shutdown
+          MinecraftServer.getSchedulerManager().scheduleTask(() -> {
+            if (MinecraftServer.getConnectionManager().getOnlinePlayers().isEmpty()) {
+              try {
+                serverHandler.setDeletionState(new DeletionState(true));
                 return TaskSchedule.stop();
+              } catch (Exception e) {
+                //Lazy work, would need better error handling in real life
+                throw new RuntimeException(e);
               }
-
-              for (@NotNull Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-                player.kick("Server is shutting down.");
-              }
-              return TaskSchedule.seconds(10);
-            }, TaskSchedule.minutes(1));
-
-          }).delay(TaskSchedule.minutes(3)).schedule();
-        })
-        .build());
+            }
+            return TaskSchedule.seconds(5);
+          }, TaskSchedule.seconds(2));
+        }).build());
   }
 }
+
